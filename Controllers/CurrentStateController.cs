@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Timers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -12,6 +13,18 @@ namespace Arduinoapi.Controllers
     [Route("api")]
     public class CurrentStateController : ControllerBase
     {
+        private static System.Timers.Timer Timer;
+        public static void SetTimer()
+        {
+            Timer = new System.Timers.Timer(300000);
+            Timer.Elapsed += TurnOff;
+            Timer.Enabled = true;
+        }
+        public static void TurnOff(Object source, ElapsedEventArgs e)
+        {
+            System.IO.File.WriteAllTextAsync(Directory.GetCurrentDirectory() + "\\state.txt", "off");
+            return;
+        }
         public async Task<bool> GetState()
         {
             
@@ -32,6 +45,8 @@ namespace Arduinoapi.Controllers
             } else
             {
                 await System.IO.File.WriteAllTextAsync(Directory.GetCurrentDirectory() + "\\state.txt", "on");
+                SetTimer();
+
             }
         }
         private readonly ILogger<CurrentStateController> _logger;
