@@ -57,4 +57,13 @@ namespace Arduinoapi.Controllers
 
         }
     }
+    public class TestController : ControllerBase
+    {
+        [HttpGet]
+        [Route("/")]
+        public async Task<IActionResult> Test()
+        {
+            return Ok("Up");
+        }
+    }
 }
